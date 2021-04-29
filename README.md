@@ -5,8 +5,8 @@
 
 ## Part 1:
 
-LINK TO YOUR PUBLISHED SITE
+* Link to the web: https://hebilli.github.io/Lab5/
 
 ## Part 2:
-
-LINK TO YOUR PART 2 REPOSITORY
+* Directory: https://github.com/HeBilLi/github-actions-for-ci
+* Issue: https://github.com/HeBilLi/github-actions-for-ci/issues/7
