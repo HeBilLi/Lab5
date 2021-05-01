@@ -60,6 +60,27 @@ imageInput.addEventListener('change', (event) => {
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
+  var voiceSelect = document.querySelector('select');
+  voiceSelect.disabled = false;
+  var voices = synth.getVoices();
+
+  if(UpdatedList == true){
+    for (var i = 0; i < voices.length; i++) {
+      var option = document.createElement('option');
+      option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
+  
+      if (voices[i].default) {
+        option.textContent += ' -- DEFAULT';
+      }
+  
+      option.setAttribute('data-lang', voices[i].lang);
+      option.setAttribute('data-name', voices[i].name);
+      voiceSelect.appendChild(option);
+    }
+    voiceSelect.options[0].remove();
+    UpdatedList = false;
+  }
+
   TopText = document.getElementById("text-top").value;
   BottomText = document.getElementById("text-bottom").value;
 
@@ -114,26 +135,7 @@ voiceButton.addEventListener("click", (event) => {
 
   //Prepare option
   event.preventDefault();
-  var voiceSelect = document.querySelector('select');
-  voiceSelect.disabled = false;
-  var voices = synth.getVoices();
 
-  if(UpdatedList == true){
-    for (var i = 0; i < voices.length; i++) {
-      var option = document.createElement('option');
-      option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
-  
-      if (voices[i].default) {
-        option.textContent += ' -- DEFAULT';
-      }
-  
-      option.setAttribute('data-lang', voices[i].lang);
-      option.setAttribute('data-name', voices[i].name);
-      voiceSelect.appendChild(option);
-    }
-    voiceSelect.options[0].remove();
-    UpdatedList = false;
-  }
 
   //Read TopText
   var utterThis = new SpeechSynthesisUtterance(TopText);
