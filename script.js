@@ -14,6 +14,8 @@ var TopText;
 var BottomText;
 var UpdatedList = true;
 var voiceLevel = voiceSlider.value;
+var voiceSelect = document.querySelector('select');
+var voices;
 
 
 
@@ -46,10 +48,6 @@ img.addEventListener('load', () => {
   var dimension = getDimmensions(canvas.width, canvas.height, img.width, img.height);
   cvc.drawImage(img, dimension["startX"], dimension["startY"], dimension["width"], dimension["height"]);
 
-  // Some helpful tips:
-  // - Fill the whole Canvas with black first to add borders on non-square images, then draw on top
-  // - Clear the form when a new image is selected
-  // - If you draw the image to canvas here, it will update as soon as a new image is selected
 });
 
 imageInput.addEventListener('change', (event) => {
@@ -60,19 +58,18 @@ imageInput.addEventListener('change', (event) => {
 form.addEventListener('submit', (event) => {
   event.preventDefault();
 
-  var voiceSelect = document.querySelector('select');
+  //Enable anf generate language list options
   voiceSelect.disabled = false;
-  var voices = synth.getVoices();
-
-  if(UpdatedList == true){
+  voices = synth.getVoices();
+  if (UpdatedList == true) {
     for (var i = 0; i < voices.length; i++) {
       var option = document.createElement('option');
       option.textContent = voices[i].name + ' (' + voices[i].lang + ')';
-  
+
       if (voices[i].default) {
         option.textContent += ' -- DEFAULT';
       }
-  
+
       option.setAttribute('data-lang', voices[i].lang);
       option.setAttribute('data-name', voices[i].name);
       voiceSelect.appendChild(option);
@@ -81,13 +78,20 @@ form.addEventListener('submit', (event) => {
     UpdatedList = false;
   }
 
-  TopText = document.getElementById("text-top").value;
-  BottomText = document.getElementById("text-bottom").value;
+  //Get Texts
+  TopText = document.getElementById("text-top").value.toUpperCase();
+  BottomText = document.getElementById("text-bottom").value.toUpperCase();
 
+  //Put texts in canvas
+  cvc.textAlign = "center";
   cvc.fillStyle = "white";
-  cvc.font = "bold 25px Arial";
-  cvc.fillText(TopText, (canvas.width / 2), 30);
-  cvc.fillText(BottomText, (canvas.width / 2), canvas.height - 20);
+  cvc.font = "bold 39px Arial";
+  cvc.strokeStyle = "black";
+  cvc.lineWidth = 1;
+  cvc.fillText(TopText, (canvas.width / 2), 40);
+  cvc.strokeText(TopText, (canvas.width / 2), 40);
+  cvc.fillText(BottomText, (canvas.width / 2), canvas.height - 17);
+  cvc.strokeText(BottomText, (canvas.width / 2), canvas.height - 17);
 
 
   //Toggle buttons
@@ -108,13 +112,6 @@ clearButton.addEventListener("click", (event) => {
   // Clear Canvas
   cvc.clearRect(0, 0, canvas.width, canvas.height);
 
-  //Fill canvas with black
-  cvc.fillStyle = "black";
-  cvc.fillRect(0, 0, canvas.width, canvas.height);
-
-  //Reset text input
-  document.getElementById("text-top").value = "";
-  document.getElementById("text-bottom").value = "";
 
   //Toggle buttons
   var buttons = document.getElementsByTagName('button');
@@ -136,11 +133,13 @@ voiceButton.addEventListener("click", (event) => {
   //Prepare option
   event.preventDefault();
 
+  TopText = document.getElementById("text-top").value.toUpperCase();
+  BottomText = document.getElementById("text-bottom").value.toUpperCase();
 
   //Read TopText
   var utterThis = new SpeechSynthesisUtterance(TopText);
   var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
-  for (i = 0; i < voices.length; i++) {
+  for (let i = 0; i < voices.length; i++) {
     if (voices[i].name === selectedOption) {
       utterThis.voice = voices[i];
     }
@@ -152,7 +151,7 @@ voiceButton.addEventListener("click", (event) => {
   //Read BottomText
   var utterThis = new SpeechSynthesisUtterance(BottomText);
   var selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
-  for (i = 0; i < voices.length; i++) {
+  for (let i = 0; i < voices.length; i++) {
     if (voices[i].name === selectedOption) {
       utterThis.voice = voices[i];
     }
@@ -162,21 +161,21 @@ voiceButton.addEventListener("click", (event) => {
 });
 
 
-voiceSlider.addEventListener("input",(event)=>{
+voiceSlider.addEventListener("input", (event) => {
 
   voiceLevel = voiceSlider.value;
   const imgIcon = document.getElementById("volume-group").getElementsByTagName("img")[0];
 
-  if (voiceLevel == 0){
+  if (voiceLevel == 0) {
     imgIcon.src = "icons/volume-level-0.svg";
     imgIcon.alt = "Volume Level 0";
-  }else if (voiceLevel <= 33){
+  } else if (voiceLevel <= 33) {
     imgIcon.src = "icons/volume-level-1.svg";
     imgIcon.alt = "Volume Level 2";
-  }else if (voiceLevel <= 66){
+  } else if (voiceLevel <= 66) {
     imgIcon.src = "icons/volume-level-2.svg";
     imgIcon.alt = "Volume Level 2";
-  }else if (voiceLevel <= 100){
+  } else if (voiceLevel <= 100) {
     imgIcon.src = "icons/volume-level-3.svg";
     imgIcon.alt = "Volume Level 3";
   }
